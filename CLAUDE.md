@@ -34,6 +34,10 @@
 3. **السياسة مؤرشَفة بإصدارات (`scoring_policies`).** أي تعديل = **صف جديد** (version+1) +
    تبديل `is_active`. **ممنوع UPDATE على سياسة قائمة.** كل تقييم مرتبط بـ `scoring_policy_id` خاص به،
    فلا تتأثر التقييمات القديمة بأي تعديل لاحق.
+   - **لا سياسة مزروعة افتراضياً.** عند غياب أي سياسة معتمدة، صفحة `policies.index` تعرض النموذج بقيم v1
+     الافتراضية (عتبة 1200…) وأول حفظ يُنشئ **الإصدار 1** (`max(version)+1`). أما `assessments.create/store`
+     فتَحرسان الغياب: إن لم توجد سياسة معتمدة تُعيدان التوجيه لـ `policies.index` برسالة بدل التعطّل
+     (سابقاً كان `ScoringPolicy::active()` بـ `firstOrFail` يرمي 404).
 
 4. **التوصية ≠ القرار.** حقلان منفصلان في `assessments`:
    - `recommended` (bool) — يحسبه المحرك (`per_person <= approval_threshold`).
@@ -105,8 +109,8 @@ type expense|income, category, amount, is_bimonthly, notes) · `home_needs` (FK:
 | GET  | /orphans                   | orphans.all         | **قائمة جميع الأيتام** في العائلات المقبولة (الاسم/العمر/ولد-بنت/اسم الأم/الهاتف/المسؤول) + زر تصدير PDF |
 | GET  | /orphans/pdf               | orphans.pdf         | **تصدير قائمة الأيتام PDF عربي** (mPDF، عرضي A4-L) — inline بتبويب جديد |
 | POST | /members/{member}/remove-orphan | members.removeOrphan | موافقة يدوية: إخراج فرد من الأيتام (يُسجَّل كملاحظة عائلة) |
-| GET  | /assessments/create        | assessments.create  | صفحة نموذج جديد |
-| POST | /assessments               | assessments.store   | إنشاء بالسياسة الحالية ← redirect للتفاصيل |
+| GET  | /assessments/create        | assessments.create  | صفحة نموذج جديد (**إن لم توجد سياسة معتمدة → redirect لـ `policies.index` لإنشاء السياسة الأولى**) |
+| POST | /assessments               | assessments.store   | إنشاء بالسياسة الحالية ← redirect للتفاصيل (يَحرس غياب السياسة أيضاً) |
 | GET  | /assessments/{a}           | assessments.show    | صفحة التفاصيل (Blade صرف) + زر طباعة PDF |
 | GET  | /assessments/{a}/pdf       | assessments.pdf     | **تصدير التقييم PDF عربي** (mPDF) — يُعرض inline بتبويب جديد |
 | GET  | /assessments/{a}/edit      | assessments.edit    | صفحة نموذج التعديل |
@@ -212,20 +216,34 @@ policies/index.blade.php            ← سياسة النقاط (نموذج Blad
 ```
 USB:\
 ├── charity-assessment\   ← كامل مجلد المشروع (يحوي ملفّي الـ bat)
-└── php\php.exe           ← PHP 8.2/8.3 Windows VS17 x64 Thread Safe (ZIP، بلا تثبيت)
+└── php\php.exe           ← PHP 8.2+ Windows x64 Thread Safe (ZIP، بلا تثبيت)
+                              # VS16=بناء 8.2 · VS17=بناء 8.3+ — كلاهما يعمل (المشروع يتطلّب php ^8.2)
 ```
 
 **تجهيز `php\php.ini` (مرة واحدة):** انسخ `php.ini-development` → `php.ini` وفعّل الإضافات:
 `pdo_sqlite`, `sqlite3`, `gd` (ضرورية لـ mPDF/PDF), `fileinfo`, `mbstring`, `openssl`.
 
-**ملفّان جاهزان على جذر المشروع (يُنقَر عليهما مباشرة):**
+**أربعة ملفّات `.bat` جاهزة على جذر المشروع (يُنقَر عليها مباشرة):**
+- `أول-تثبيت.bat` — **مرة واحدة بعد `git clone`:** ينسخ `.env.example`→`.env` + `key:generate` + ينشئ
+  `database.sqlite` فارغة + `migrate --force` + تنظيف الكاش. (لا يَزرع سياسة — تُنشأ يدوياً من `policies.index`.)
 - `تشغيل-البرنامج.bat` — يجد PHP في `..\php` أو `.\php`، ينظّف الكاش (`config:clear`/`view:clear`)،
   يفتح المتصفح على `http://127.0.0.1:8000`، ويُشغّل `php artisan serve`. تبقى نافذته مفتوحة أثناء الاستعمال.
+- `تحديث.bat` — يأخذ نسخة احتياطية ثم `git pull` + `migrate --force` + تنظيف الكاش. يتطلّب **Git مثبّتاً** على الجهاز.
 - `نسخة-احتياطية.bat` — ينسخ `database/database.sqlite` إلى `backups\database_<طابع-زمني>.sqlite`
   (طابع زمني عبر PowerShell)، ويُبقي آخر **30 نسخة** فقط ويحذف الأقدم.
 
 **أعراف التشغيل المحمول:** لا تُنزع الفلاشة والنافذة السوداء مفتوحة (تلف محتمل للقاعدة)؛
 خذ نسخة احتياطية دورية وانقل مجلد `backups\` إلى قرص آخر؛ سيناريو الاستخدام المعتمد: **شخص واحد/جهاز واحد**.
+
+### المستودع على GitHub (تسليم التحديثات)
+
+- المستودع **الخاص**: `https://github.com/mustafa88/charity-assessment` — يُدار من جهاز التطوير ويُسحَب على الفلاشة.
+- **مرفوع عمداً خلافاً للمعتاد:** `vendor/` و`public/build/` (أُزيلا من `.gitignore`) كي يعمل التحديث بـ `git pull`
+  دون حاجة لـ Composer/Node على جهاز مستخدم الفلاشة (يملك PHP المحمول فقط).
+- **مستثنى (بيانات محلية لا تُرفع أبداً):** `database/*.sqlite` و`.env` و`storage/app/private/family-attachments`
+  و`/backups` — حتى لا يطمسها `git pull`. لذا التثبيت الأول يبني القاعدة من الـ migrations عبر `أول-تثبيت.bat`.
+- **دورة المطوّر:** بعد تعديل Blade/CSS → `npm run build` ثم commit لملفات `public/build`. بعد تغيير الاعتماديات →
+  `composer install` ثم commit لـ `vendor`. ثم `git push`. يصل التحديث جاهزاً للفلاشة بـ «تحديث.bat».
 
 ## أوامر مهمة
 ```bash
