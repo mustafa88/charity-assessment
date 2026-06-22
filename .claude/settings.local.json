@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan *)",
+      "Bash(del \"c:\\\\xampp\\\\htdocs\\\\charity-assessment\\\\resources\\\\views\\\\app.blade.php\")",
+      "Bash(echo \"deleted:$?\")",
+      "Bash(php -l app/Http/Controllers/AssessmentController.php)",
+      "PowerShell(Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force; Write-Output \"Policy set to: $\\(Get-ExecutionPolicy -Scope CurrentUser\\)\")",
+      "PowerShell(npm.cmd run build 2>&1)",
+      "Bash(grep -nE 'next_visit_date|function |protected \\\\$casts|protected \\\\$fillable|protected \\\\$appends' app/Models/Assessment.php)",
+      "Bash(composer --version)",
+      "Bash(php -r 'echo PHP_VERSION.\"\\\\n\"; foreach\\([\"mbstring\",\"gd\"] as $e\\) echo $e.\": \".\\(extension_loaded\\($e\\)?\"OK\":\"MISSING\"\\).\"\\\\n\";')",
+      "Bash(php --ini)",
+      "Read(//c/xampp/php/ext/**)",
+      "Read(//c/xampp/php/**)",
+      "Bash(php -r 'echo \"gd: \".\\(extension_loaded\\(\"gd\"\\)?\"OK ✓\":\"MISSING\"\\).\"\\\\n\";')",
+      "Bash(composer require *)",
+      "Bash(npm run *)",
+      "PowerShell(php artisan serve)",
+      "Bash(php -l app/Http/Controllers/DashboardController.php)",
+      "PowerShell(Copy-Item \"database\\\\database.sqlite\" \"database\\\\backup-before-supervisors.sqlite\" -Force)",
+      "PowerShell(\"backup ok\")",
+      "Bash(php database/annotate_schema.php)",
+      "PowerShell(Copy-Item \"database\\\\database.sqlite\" \"database\\\\backup-before-drop-marital.sqlite\" -Force)"
+    ]
+  }
+}
