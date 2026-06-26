@@ -143,6 +143,34 @@
             </div>
         </a>
 
+        {{-- تصفّح العائلات --}}
+        <a href="{{ route('families.browse', ['filter' => 'orphans']) }}"
+           class="group bg-white rounded-xl shadow-sm hover:shadow-md transition p-5 flex items-start gap-4 border border-transparent hover:border-indigo-200">
+            <div class="shrink-0 w-12 h-12 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L14 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 018 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-semibold text-gray-800 group-hover:text-indigo-700">تصفّح العائلات</h3>
+                <p class="text-sm text-gray-500 mt-1">العائلات المقبولة حسب: الأيتام، الترميم، الحالة الاجتماعية.</p>
+            </div>
+        </a>
+
+        {{-- تصفّح الأفراد --}}
+        <a href="{{ route('members.browse', ['filter' => 'children']) }}"
+           class="group bg-white rounded-xl shadow-sm hover:shadow-md transition p-5 flex items-start gap-4 border border-transparent hover:border-sky-200">
+            <div class="shrink-0 w-12 h-12 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-semibold text-gray-800 group-hover:text-sky-700">تصفّح الأفراد</h3>
+                <p class="text-sm text-gray-500 mt-1">أفراد العائلات المقبولة: كل الأولاد أو الأيتام فقط.</p>
+            </div>
+        </a>
+
         {{-- مقبولة بلا مسؤول --}}
         <a href="{{ route('families.unassigned') }}"
            class="group bg-white rounded-xl shadow-sm hover:shadow-md transition p-5 flex items-start gap-4 border border-transparent hover:border-orange-200">

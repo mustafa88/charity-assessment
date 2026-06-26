@@ -106,6 +106,8 @@ type expense|income, category, amount, is_bimonthly, notes) · `home_needs` (FK:
 | GET  | /upcoming-visits           | visits.upcoming     | صفحة الزيارات القريبة المستحقّة (أحدث تقييم لكل عائلة) — زرّ «زيارة جديدة» يفتح **تعديل** أحدث تقييم (لا يُنشئ تقييماً/عائلة جديدة) |
 | GET  | /statistics                | statistics.index    | **صفحة الإحصائيات** للعائلات المقبولة: عدد العائلات/عائلات الأيتام/الترميم، الأولاد والأيتام (مع تفصيل ذكور/إناث)، توزيع حسب الحالة الاجتماعية ونوع السكن (`StatisticsController`) |
 | GET  | /orphan-reviews            | orphans.index       | صفحة مراجعة الأيتام الذين بلغوا 15+ (للموافقة اليدوية على الإخراج) |
+| GET  | /families-browse?filter=   | families.browse     | **تصفّح العائلات المقبولة** حسب معيار: `orphans` (فيها أيتام) · `repair` (تحتاج ترميم) · `married\|divorced\|widowed\|abandoned` (الحالة الاجتماعية). تبويبات + عدّادات (`FamilyController@browse`) |
+| GET  | /members-browse?filter=    | members.browse      | **تصفّح أفراد العائلات المقبولة حسب الحالة**: `children` (كل الأولاد) · `orphans` (الأيتام) · `higher_education` (طالب جامعي) · `tutoring` (يحتاج دعم/دروس تقوية) · `contributes` (يعمل/يساهم). تبويبات + عدّادات (`MemberController@browse`) |
 | GET  | /orphans                   | orphans.all         | **قائمة جميع الأيتام** في العائلات المقبولة (الاسم/العمر/ولد-بنت/اسم الأم/الهاتف/المسؤول) + زر تصدير PDF |
 | GET  | /orphans/pdf               | orphans.pdf         | **تصدير قائمة الأيتام PDF عربي** (mPDF، عرضي A4-L) — inline بتبويب جديد |
 | POST | /members/{member}/remove-orphan | members.removeOrphan | موافقة يدوية: إخراج فرد من الأيتام (يُسجَّل كملاحظة عائلة) |
@@ -149,6 +151,8 @@ orphans/index.blade.php             ← مراجعة الأيتام (15+) للم
 orphans/all.blade.php               ← قائمة جميع الأيتام في العائلات المقبولة + زر تصدير PDF
 orphans/pdf.blade.php               ← قالب طباعة قائمة الأيتام (مستقل، عرضي A4-L، لا يمتد layouts.main)
 visits/upcoming.blade.php           ← الزيارات القريبة المستحقّة (أحدث تقييم لكل عائلة) — المقبولة فقط
+families/browse.blade.php           ← تصفّح العائلات المقبولة (تبويبات: أيتام/ترميم + شرائط الحالة الاجتماعية) — جدول
+members/browse.blade.php            ← تصفّح أفراد العائلات المقبولة (تبويبات: كل الأولاد/الأيتام) — جدول بشارات الحالة
 families/unassigned.blade.php        ← عائلات مقبولة بلا مسؤول + ربط سريع inline
 supervisors/index.blade.php         ← إدارة المسؤولين (إضافة/تعديل/حذف؛ Alpine لتبديل وضع التعديل)
 policies/index.blade.php            ← سياسة النقاط (نموذج Blade صرف + سجل الإصدارات)
@@ -249,6 +253,7 @@ USB:\
 ```bash
 php artisan migrate
 php artisan db:seed --class=ScoringPolicySeeder   # الاسم القصير يتجنّب مشاكل الـ backslash (PowerShell)
+php artisan db:seed --class=DemoFamiliesSeeder    # بيانات تجريبية للعرض: 24 عائلة كاملة (تراكمي — للتطوير/العرض فقط، لا التثبيت الحقيقي)
 php artisan serve
 
 npm run build                  # بناء الأصول (CSS/JS) — مطلوب بعد أي تعديل Blade/CSS

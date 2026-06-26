@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FamilyAttachmentController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FamilyNoteController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScoringPolicyController;
 use App\Http\Controllers\StatisticsController;
@@ -20,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get ('/upcoming-visits',          [AssessmentController::class, 'upcoming'])->name('visits.upcoming');
     Route::get ('/statistics',               [StatisticsController::class, 'index'])->name('statistics.index');
     Route::get ('/orphan-reviews',           [AssessmentController::class, 'orphanReviews'])->name('orphans.index');
+    Route::get ('/families-browse',           [FamilyController::class, 'browse'])->name('families.browse');
+    Route::get ('/members-browse',            [MemberController::class, 'browse'])->name('members.browse');
     Route::get ('/orphans',                   [AssessmentController::class, 'orphans'])->name('orphans.all');
     Route::get ('/orphans/pdf',               [AssessmentController::class, 'orphansPdf'])->name('orphans.pdf');
     Route::post('/members/{member}/remove-orphan', [AssessmentController::class, 'removeOrphan'])->name('members.removeOrphan');
