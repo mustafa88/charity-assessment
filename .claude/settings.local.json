@@ -35,7 +35,8 @@
       "Bash(powershell -NoProfile -Command \"Get-Process php -ErrorAction SilentlyContinue | Select-Object Id,CommandLine\")",
       "Bash(netstat -ano)",
       "Bash(powershell -NoProfile -Command \"Stop-Process -Id 29880 -Force\")",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git push *)"
     ]
   }
 }
