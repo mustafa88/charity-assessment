@@ -107,6 +107,8 @@ type expense|income, category, amount, is_bimonthly, notes) · `home_needs` (FK:
 | GET  | /statistics                | statistics.index    | **صفحة الإحصائيات** للعائلات المقبولة: عدد العائلات/عائلات الأيتام/الترميم، الأولاد والأيتام (مع تفصيل ذكور/إناث)، توزيع حسب الحالة الاجتماعية ونوع السكن (`StatisticsController`) |
 | GET  | /orphan-reviews            | orphans.index       | صفحة مراجعة الأيتام الذين بلغوا 15+ (للموافقة اليدوية على الإخراج) |
 | GET  | /families-browse?filter=   | families.browse     | **تصفّح العائلات المقبولة** حسب معيار: `orphans` (فيها أيتام) · `repair` (تحتاج ترميم) · `married\|divorced\|widowed\|abandoned` (الحالة الاجتماعية). تبويبات + عدّادات (`FamilyController@browse`) |
+| GET  | /families-search?q=        | families.search     | **بحث عن عائلة بجميع العائلات** (بلا فلترة حسب القرار) — كلمة واحدة تُطابق اسم الزوج/الزوجة أو هويّته أو هاتفه (`FamilyController@search`) |
+| GET  | /families/{family}         | families.show       | **صفحة تفاصيل عائلة**: الهوية الثابتة + تاريخ كل تقييماتها (رابط لكل تقييم) + ملاحظاتها + مرفقاتها (`FamilyController@show`) — تُفتح من نتيجة البحث |
 | GET  | /members-browse?filter=    | members.browse      | **تصفّح أفراد العائلات المقبولة حسب الحالة**: `children` (كل الأولاد) · `orphans` (الأيتام) · `higher_education` (طالب جامعي) · `tutoring` (يحتاج دعم/دروس تقوية) · `contributes` (يعمل/يساهم). تبويبات + عدّادات (`MemberController@browse`) |
 | GET  | /orphans                   | orphans.all         | **قائمة جميع الأيتام** في العائلات المقبولة (الاسم/العمر/ولد-بنت/اسم الأم/الهاتف/المسؤول) + زر تصدير PDF |
 | GET  | /orphans/pdf               | orphans.pdf         | **تصدير قائمة الأيتام PDF عربي** (mPDF، عرضي A4-L) — inline بتبويب جديد |
@@ -151,6 +153,8 @@ orphans/index.blade.php             ← مراجعة الأيتام (15+) للم
 orphans/all.blade.php               ← قائمة جميع الأيتام في العائلات المقبولة + زر تصدير PDF
 orphans/pdf.blade.php               ← قالب طباعة قائمة الأيتام (مستقل، عرضي A4-L، لا يمتد layouts.main)
 visits/upcoming.blade.php           ← الزيارات القريبة المستحقّة (أحدث تقييم لكل عائلة) — المقبولة فقط
+families/search.blade.php           ← بحث عن عائلة بجميع العائلات (اسم/هوية/هاتف) — جدول نتائج يفتح families.show
+families/show.blade.php             ← تفاصيل عائلة: هوية ثابتة + تاريخ التقييمات (روابط) + ملاحظات + مرفقات
 families/browse.blade.php           ← تصفّح العائلات المقبولة (تبويبات: أيتام/ترميم + شرائط الحالة الاجتماعية) — جدول
 members/browse.blade.php            ← تصفّح أفراد العائلات المقبولة (تبويبات: كل الأولاد/الأيتام) — جدول بشارات الحالة
 families/unassigned.blade.php        ← عائلات مقبولة بلا مسؤول + ربط سريع inline
@@ -209,6 +213,7 @@ policies/index.blade.php            ← سياسة النقاط (نموذج Blad
 - ✅ التقييمات مقسّمة حسب القرار (تبويبات). `visits.upcoming` و`orphans.index` تعرضان **العائلات المقبولة فقط** (decision=accepted).
 - ✅ ملاحظات العائلة (`family_notes` + `FamilyNoteController`) في صفحة التفاصيل.
 - ✅ **المسؤولون عن العائلات:** جدول `supervisors` يُدار من صفحته؛ `families.supervisor_id` (اختياري) يُحدَّد من نموذج التقييم أو من صفحة «مقبولة بلا مسؤول» (ربط سريع). `families.description` وصف حرّ اختياري. كلاهما من هوية العائلة (لا التقييم).
+- ✅ **بحث عن عائلة (`families.search`) + صفحة تفاصيل عائلة (`families.show`):** بحث بكلمة واحدة تُطابق اسم/هوية/هاتف الزوج أو الزوجة عبر **كل** العائلات (بلا فلترة حسب القرار، بخلاف `families.browse`/`families.unassigned`). النتيجة تفتح `families.show` — أول صفحة تعرض العائلة كوحدة مستقلة عن أي تقييم بعينه: الهوية الثابتة + جدول بكل تقييماتها (تاريخ/نقاط/توصية/قرار مع رابط لكل تقييم) + نفس نموذجي الملاحظات والمرفقات المستخدَمين في `assessments.show` (يكتبان لنفس الجداول family-scoped، فالبيانات مشتركة بين الصفحتين بلا تكرار منطق).
 - ⏳ ملاحظات مفتوحة: تأكيد قاعدة "عدد الأهل 2/1" مع المبرة (أدناه).
 
 ## التشغيل المحمول من فلاشة USB (بلا تثبيت)

@@ -85,4 +85,38 @@ class FamilyController extends Controller
 
         return back()->with('status', 'تم تحديث المسؤول عن العائلة.');
     }
+
+    /**
+     * بحث عن عائلة بجميع العائلات (بلا فلترة حسب القرار) — كلمة واحدة تُطابق
+     * اسم الزوج/الزوجة أو هويّته أو هاتفه.
+     */
+    public function search(Request $r)
+    {
+        $q       = trim((string) $r->query('q', ''));
+        $results = collect();
+
+        if ($q !== '') {
+            $results = Family::with(['assessments', 'supervisor'])
+                ->where(function ($query) use ($q) {
+                    $query->where('husband_name', 'like', "%{$q}%")
+                        ->orWhere('wife_name', 'like', "%{$q}%")
+                        ->orWhere('husband_id', 'like', "%{$q}%")
+                        ->orWhere('wife_id', 'like', "%{$q}%")
+                        ->orWhere('husband_phone', 'like', "%{$q}%")
+                        ->orWhere('wife_phone', 'like', "%{$q}%");
+                })
+                ->orderByRaw('COALESCE(husband_name, wife_name)')
+                ->get();
+        }
+
+        return view('families.search', compact('q', 'results'));
+    }
+
+    /** صفحة تفاصيل عائلة: هوية ثابتة + تاريخ كل تقييماتها + ملاحظاتها + مرفقاتها. */
+    public function show(Family $family)
+    {
+        $family->load(['assessments.policy', 'supervisor', 'notes.author', 'attachments.author']);
+
+        return view('families.show', compact('family'));
+    }
 }

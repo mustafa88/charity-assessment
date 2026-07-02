@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::get ('/statistics',               [StatisticsController::class, 'index'])->name('statistics.index');
     Route::get ('/orphan-reviews',           [AssessmentController::class, 'orphanReviews'])->name('orphans.index');
     Route::get ('/families-browse',           [FamilyController::class, 'browse'])->name('families.browse');
+    Route::get ('/families-search',           [FamilyController::class, 'search'])->name('families.search');
     Route::get ('/members-browse',            [MemberController::class, 'browse'])->name('members.browse');
     Route::get ('/orphans',                   [AssessmentController::class, 'orphans'])->name('orphans.all');
     Route::get ('/orphans/pdf',               [AssessmentController::class, 'orphansPdf'])->name('orphans.pdf');
@@ -34,6 +35,9 @@ Route::middleware('auth')->group(function () {
     Route::put ('/assessments/{a}',          [AssessmentController::class, 'update'])->name('assessments.update');
     Route::post('/assessments/{a}/decision', [AssessmentController::class, 'decide'])->name('assessments.decide');
     Route::post('/assessments/{a}/convert',  [AssessmentController::class, 'convertToLatest'])->name('assessments.convert');
+
+    // صفحة تفاصيل عائلة (هوية + تاريخ تقييمات + ملاحظات + مرفقات) — تُفتح من نتيجة البحث
+    Route::get ('/families/{family}',       [FamilyController::class, 'show'])->name('families.show');
 
     // ملاحظات العائلة (سجل تراكمي مؤرّخ)
     Route::post('/families/{family}/notes', [FamilyNoteController::class, 'store'])->name('families.notes.store');

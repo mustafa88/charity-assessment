@@ -21,7 +21,21 @@
       "PowerShell(Copy-Item \"database\\\\database.sqlite\" \"database\\\\backup-before-supervisors.sqlite\" -Force)",
       "PowerShell(\"backup ok\")",
       "Bash(php database/annotate_schema.php)",
-      "PowerShell(Copy-Item \"database\\\\database.sqlite\" \"database\\\\backup-before-drop-marital.sqlite\" -Force)"
+      "PowerShell(Copy-Item \"database\\\\database.sqlite\" \"database\\\\backup-before-drop-marital.sqlite\" -Force)",
+      "Bash(which chromium-cli *)",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Bash(npx --no-install playwright --version)",
+      "Bash(npm ls *)",
+      "Bash(cd /tmp)",
+      "Bash(curl -s -b cookies.txt __TRACKED_VAR__/families/1 -o family_show.html -w 'status: %{http_code}\\\\n')",
+      "Bash(curl -s -b cookies.txt __TRACKED_VAR__/assessments/1 -o assessment_show.html -w 'status: %{http_code}\\\\n')",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"CommandLine LIKE '\\\\''%artisan serve%port=8123%'\\\\''\" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }')",
+      "Bash(curl -s -o /dev/null -w \"post-stop status: %{http_code}\\\\n\" http://127.0.0.1:8123/login --max-time 2)",
+      "Bash(curl -s -o /dev/null -w \"status: %{http_code}\\\\n\" http://127.0.0.1:8123/login --max-time 2)",
+      "Bash(powershell -NoProfile -Command \"Get-Process php -ErrorAction SilentlyContinue | Select-Object Id,CommandLine\")",
+      "Bash(netstat -ano)",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 29880 -Force\")",
+      "Bash(git add *)"
     ]
   }
 }

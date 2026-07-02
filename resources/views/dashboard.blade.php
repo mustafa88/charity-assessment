@@ -143,6 +143,20 @@
             </div>
         </a>
 
+        {{-- بحث عن عائلة --}}
+        <a href="{{ route('families.search') }}"
+           class="group bg-white rounded-xl shadow-sm hover:shadow-md transition p-5 flex items-start gap-4 border border-transparent hover:border-indigo-200">
+            <div class="shrink-0 w-12 h-12 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10.5A6.5 6.5 0 114 10.5a6.5 6.5 0 0113 0z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-semibold text-gray-800 group-hover:text-indigo-700">بحث عن عائلة</h3>
+                <p class="text-sm text-gray-500 mt-1">بحث بجميع العائلات: بالاسم، الهوية، أو الهاتف.</p>
+            </div>
+        </a>
+
         {{-- تصفّح العائلات --}}
         <a href="{{ route('families.browse', ['filter' => 'orphans']) }}"
            class="group bg-white rounded-xl shadow-sm hover:shadow-md transition p-5 flex items-start gap-4 border border-transparent hover:border-indigo-200">

@@ -1079,6 +1079,7 @@ namespace App\Models {
 	 * @property int $size
 	 * @property string $mime
 	 * @property string $path
+	 * @property string|null $description
 	 * @property string $original_name
 	 * @property int|null $user_id
 	 * @property int $family_id
@@ -1089,6 +1090,7 @@ namespace App\Models {
 	 * @method static \Illuminate\Database\Eloquent\Builder<FamilyAttachment>|FamilyAttachment whereFamilyId($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder<FamilyAttachment>|FamilyAttachment whereUserId($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder<FamilyAttachment>|FamilyAttachment whereOriginalName($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder<FamilyAttachment>|FamilyAttachment whereDescription($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder<FamilyAttachment>|FamilyAttachment wherePath($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder<FamilyAttachment>|FamilyAttachment whereMime($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder<FamilyAttachment>|FamilyAttachment whereSize($value)
