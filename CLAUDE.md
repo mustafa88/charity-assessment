@@ -224,7 +224,7 @@ policies/index.blade.php            ← سياسة النقاط (نموذج Blad
 **بنية الفلاشة:**
 ```
 USB:\
-├── charity-assessment\   ← كامل مجلد المشروع (يحوي ملفّي الـ bat)
+├── charity-assessment\   ← كامل مجلد المشروع (يحوي ملفّات الـ bat)
 └── php\php.exe           ← PHP 8.2+ Windows x64 Thread Safe (ZIP، بلا تثبيت)
                               # VS16=بناء 8.2 · VS17=بناء 8.3+ — كلاهما يعمل (المشروع يتطلّب php ^8.2)
 ```
@@ -232,23 +232,26 @@ USB:\
 **تجهيز `php\php.ini` (مرة واحدة):** انسخ `php.ini-development` → `php.ini` وفعّل الإضافات:
 `pdo_sqlite`, `sqlite3`, `gd` (ضرورية لـ mPDF/PDF), `fileinfo`, `mbstring`, `openssl`.
 
-**أربعة ملفّات `.bat` جاهزة على جذر المشروع (يُنقَر عليها مباشرة):**
-- `أول-تثبيت.bat` — **مرة واحدة بعد `git clone`:** ينسخ `.env.example`→`.env` + `key:generate` + ينشئ
+**أربعة ملفّات `.bat` جاهزة على جذر المشروع (يُنقَر عليها مباشرة) — أسماء ومحتوى إنجليزي بالكامل عمداً**
+(راجع التحذير أدناه لسبب تفادي أي نص عربي داخل ملفات bat):
+- `first-install.bat` — **مرة واحدة بعد `git clone`:** ينسخ `.env.example`→`.env` + `key:generate` + ينشئ
   `database.sqlite` فارغة + `migrate --force` + تنظيف الكاش. (لا يَزرع سياسة — تُنشأ يدوياً من `policies.index`.)
-- `تشغيل-البرنامج.bat` — يجد PHP في `..\php` أو `.\php`، ينظّف الكاش (`config:clear`/`view:clear`)،
+- `run.bat` — يجد PHP في `..\php` أو `.\php`، ينظّف الكاش (`config:clear`/`view:clear`)،
   يفتح المتصفح على `http://127.0.0.1:8000`، ويُشغّل `php artisan serve`. تبقى نافذته مفتوحة أثناء الاستعمال.
-- `تحديث.bat` — يأخذ نسخة احتياطية ثم `git pull` + `migrate --force` + تنظيف الكاش. يتطلّب **Git مثبّتاً** على الجهاز.
-- `نسخة-احتياطية.bat` — ينسخ `database/database.sqlite` إلى `backups\database_<طابع-زمني>.sqlite`
+- `update.bat` — يأخذ نسخة احتياطية ثم `git pull` + `migrate --force` + تنظيف الكاش. يتطلّب **Git مثبّتاً** على الجهاز.
+- `backup.bat` — ينسخ `database/database.sqlite` إلى `backups\database_<طابع-زمني>.sqlite`
   (طابع زمني عبر PowerShell)، ويُبقي آخر **30 نسخة** فقط ويحذف الأقدم.
 
 **أعراف التشغيل المحمول:** لا تُنزع الفلاشة والنافذة السوداء مفتوحة (تلف محتمل للقاعدة)؛
 خذ نسخة احتياطية دورية وانقل مجلد `backups\` إلى قرص آخر؛ سيناريو الاستخدام المعتمد: **شخص واحد/جهاز واحد**.
 
-**تحذير — ملفات `.bat` يجب أن تبقى بنهايات أسطر CRLF:** `cmd.exe` يفشل بصمت (أو يطبع أخطاء "not recognized"
-مبعثرة) عند قراءة ملف `.bat` بنص عربي (UTF-8) + `chcp 65001` إن كانت نهايات أسطره LF. القاعدة العامة
-`* text=auto eol=lf` في `.gitattributes` تفرض LF على كل الملفات النصية بالمشروع، لذا فيه **استثناء صريح**:
-`*.bat text eol=crlf`. أي تعديل مستقبلي على ملفات bat عبر أداة/محرر يحفظ بـLF سيُصلَّح تلقائياً عند أي
-`git add`/checkout بفضل هذا الاستثناء — لا تحذفه.
+**تحذير — ملفات `.bat` يجب أن تبقى إنجليزية (اسماً ومحتوى) وبنهايات أسطر CRLF:** `cmd.exe` يفشل بصمت
+(أو يطبع أخطاء "not recognized" مبعثرة) عند قراءة ملف `.bat` فيه نص عربي (UTF-8) + `chcp 65001` إن كانت
+نهايات أسطره LF — هذا ما حصل فعلياً وسبّب فشل الملفات الأربعة صامتاً. الحل النهائي المعتمد: **كل نص داخل
+ملفات bat إنجليزي بحت (ASCII)** فلا حاجة لـ `chcp 65001` إطلاقاً ولا خطر لتصادم الترميز. وفوق هذا، القاعدة
+العامة `* text=auto eol=lf` في `.gitattributes` تفرض LF على كل الملفات النصية بالمشروع، لذا فيه **استثناء
+صريح**: `*.bat text eol=crlf` يضمن CRLF دائماً بعد أي `git pull`/`clone` — لا تحذفه. **لا تُعِد أي نص عربي
+لملفات bat مستقبلاً.**
 
 ### المستودع على GitHub (تسليم التحديثات)
 
@@ -256,9 +259,9 @@ USB:\
 - **مرفوع عمداً خلافاً للمعتاد:** `vendor/` و`public/build/` (أُزيلا من `.gitignore`) كي يعمل التحديث بـ `git pull`
   دون حاجة لـ Composer/Node على جهاز مستخدم الفلاشة (يملك PHP المحمول فقط).
 - **مستثنى (بيانات محلية لا تُرفع أبداً):** `database/*.sqlite` و`.env` و`storage/app/private/family-attachments`
-  و`/backups` — حتى لا يطمسها `git pull`. لذا التثبيت الأول يبني القاعدة من الـ migrations عبر `أول-تثبيت.bat`.
+  و`/backups` — حتى لا يطمسها `git pull`. لذا التثبيت الأول يبني القاعدة من الـ migrations عبر `first-install.bat`.
 - **دورة المطوّر:** بعد تعديل Blade/CSS → `npm run build` ثم commit لملفات `public/build`. بعد تغيير الاعتماديات →
-  `composer install` ثم commit لـ `vendor`. ثم `git push`. يصل التحديث جاهزاً للفلاشة بـ «تحديث.bat».
+  `composer install` ثم commit لـ `vendor`. ثم `git push`. يصل التحديث جاهزاً للفلاشة بـ «update.bat».
 
 ## أوامر مهمة
 ```bash

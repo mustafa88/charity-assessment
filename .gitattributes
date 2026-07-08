@@ -1,6 +1,6 @@
 * text=auto eol=lf
 
-# ملفات bat لازم CRLF دائماً — Windows cmd.exe يفشل بقراءة نص عربي (UTF-8) مع نهايات أسطر LF
+# ملفات bat لازم CRLF دائماً (اسماً ومحتوى إنجليزي فقط — راجع تحذير CLAUDE.md)
 *.bat text eol=crlf
 
 *.blade.php diff=html
