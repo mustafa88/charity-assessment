@@ -17,6 +17,14 @@ if errorlevel 1 (
   pause & exit /b 1
 )
 
+rem USB/removable drives don't record file ownership, which makes Git treat this
+rem folder as untrusted ("dubious ownership") on some computers. Whitelist it
+rem quietly so git pull below doesn't fail with that error.
+git config --global --get-all safe.directory 2>nul | findstr /L /C:"%CD%" >nul
+if errorlevel 1 (
+  git config --global --add safe.directory "%CD%" >nul 2>&1
+)
+
 echo.
 echo  =========================================
 echo   Fetching the latest update from GitHub
