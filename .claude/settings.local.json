@@ -37,7 +37,10 @@
       "Bash(powershell -NoProfile -Command \"Stop-Process -Id 29880 -Force\")",
       "Bash(git add *)",
       "Bash(git push *)",
-      "Bash(cmd //c \"أول-تثبيت.bat\")"
+      "Bash(cmd //c \"أول-تثبيت.bat\")",
+      "Bash(/c/xampp/php/php.exe artisan tinker '--execute= *)",
+      "Read(//c/Users/mustafa/AppData/Local/Temp/claude/c--xampp-htdocs-charity-assessment/15059b6a-d6d2-41a1-b0f8-3c3236f40fff/scratchpad/**)",
+      "Bash(node shots.js)"
     ]
   }
 }
