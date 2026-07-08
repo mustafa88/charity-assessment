@@ -36,7 +36,8 @@
       "Bash(netstat -ano)",
       "Bash(powershell -NoProfile -Command \"Stop-Process -Id 29880 -Force\")",
       "Bash(git add *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(cmd //c \"أول-تثبيت.bat\")"
     ]
   }
 }
